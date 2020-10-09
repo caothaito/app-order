@@ -1,9 +1,35 @@
  const User =require('../../models/user')
+ const passport = require('passport')
  const bcrypt = require('bcrypt')
 function authController() {
     return {
         login(req,res,next) {
             res.render('auth/login')
+        },
+        postLogin ( req,res,next) {
+            const {email, password}  = req.body
+            //Validate request
+            if(!email || !password){
+                req.flash('error', 'All fields are required')
+                return res.redirect('/login')
+            }
+            passport.authenticate('local',(err , user , info ) => {
+                if(err) {
+                    req.flash('error', info.message)
+                    return next(err)
+                }
+                if(!user) {
+                    req.flash('error', info.message)
+                    return res.redirect('/login')
+                }
+                req.logIn(user, (err) => {
+                   if(err) {
+                    req.flash('error', info.message) 
+                    return next(err)
+                   }
+                   return res.redirect('/')
+                })
+            })(req,res,next)
         },
         register(req,res,next) {
             res.render('auth/register')
@@ -51,11 +77,10 @@ function authController() {
                 req.flash('error', 'Something went wrong')
                 return res.redirect('./register')
             })
-
-
-
-
-            console.log(req.body);
+        },
+        logout(req,res,next ) {
+            req.logout()
+            return res.redirect('/login')
         }
     }
 }

@@ -1,8 +1,8 @@
-const LocalStrategy = require('passport-local').strategy
+const LocalStrategy = require('passport-local').Strategy
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 function init (passport) {
-    passport.use(new  LocalStrategy({ usernameField:'email' } , async (email, password, done) => {
+    passport.use( new  LocalStrategy({ usernameField:'email' } , async (email, password, done) => {
         //login
         //check if email exists
       const user = await  User.findOne({ email: email })
@@ -11,7 +11,7 @@ function init (passport) {
       }
 
 
-      bcrypt.compare(password, user.passport).then( match => {
+      bcrypt.compare(password, user.password).then( match => {
           if(match) {
               return done(null,user, {message : 'Logged in seccesfully'})
           }
