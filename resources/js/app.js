@@ -34,3 +34,13 @@ addToCart.forEach((btn) => {
     // console.log(pizza);
     })
 })
+
+
+// remove alert messgage after X seconds
+
+const alertMsg = document.querySelector('#success-alert')
+if(alertMsg) {
+    setTimeout(() =>{
+        alertMsg.remove()
+    },2000)
+}
